@@ -26,13 +26,13 @@ export class AuthResolve {
     ) {}
 
     @Mutation(() => Result, { description: '发送短信验证码' })
-    async sendSmsMessage(@Args('phone') tel: string): Promise<Result> {
-        return this.authService.sendCodeMsg(tel);
+    async sendCodeMsg(@Args('phone') phone: string): Promise<Result> {
+        return this.authService.sendCodeMsg(phone);
     }
 
     @Mutation(() => Result, { description: '登录' })
-    async login(@Args('tel') tel: string, @Args('code') code: string): Promise<Result> {
-        const user = await this.userService.findByTel(tel);
+    async login(@Args('phone') phone: string, @Args('code') code: string): Promise<Result> {
+        const user = await this.userService.findByTel(phone);
 
         if (!user) {
             return {

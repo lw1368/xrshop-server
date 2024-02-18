@@ -20,19 +20,19 @@ export class User {
         comment: '描述',
         default: '',
     })
-    desc: string;
+    desc?: string;
 
     @Column({
         comment: '手机号',
         nullable: true,
     })
-    phone: string;
+    phone?: string;
 
     @Column({
-        comment: '头像',
+        comment: '手机号',
         nullable: true,
     })
-    avatar: string;
+    email?: string;
 
     @Column({
         comment: '验证码',

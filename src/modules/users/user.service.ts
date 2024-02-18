@@ -18,7 +18,7 @@ export class UserService {
     }
 
     // 删除一个用户
-    async del(id: string): Promise<boolean> {
+    async del(id: string[]): Promise<boolean> {
         const res = await this.UserRepository.delete(id);
         if (res.affected > 0) {
             return true;
@@ -43,6 +43,23 @@ export class UserService {
             },
         });
         return res;
+    }
+
+    // 查询用户列表
+    async findUsers({
+        start,
+        length,
+    }: {
+        start: number;
+        length: number;
+    }): Promise<[User[], number]> {
+        return this.UserRepository.findAndCount({
+            take: length,
+            skip: start,
+            // order: {
+            //     createdAt: 'DESC',
+            // },
+        });
     }
 
     // 查询一个用户 通过手机号

@@ -5,15 +5,15 @@ export class UserType {
     @Field()
     id?: string;
 
-    @Field({ description: '昵称' })
+    @Field({ description: '昵称', nullable: true })
     name?: string;
 
-    @Field({ description: '简介' })
-    desc?: string;
+    @Field({ description: '简介', nullable: true })
+    email?: string;
 
-    @Field({ description: 'phone' })
-    phone: string;
+    @Field({ description: 'phone', nullable: true })
+    phone?: string;
 
     @Field({ description: '头像', nullable: true })
-    avatar: string;
+    avatar?: string;
 }

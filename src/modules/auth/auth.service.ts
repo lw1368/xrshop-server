@@ -7,7 +7,6 @@ import dayjs from 'dayjs';
 import { SIGN_NAME, TEMPLATE_CODE } from '@/common/constants/aliyun';
 import { CODE_NOT_EXPIRE, CODE_SEND_ERROR, SUCCESS, UPDATE_ERROR } from '@/common/constants/code';
 import { Result } from '@/common/dto/result.type';
-import { getRandomCode } from '@/shared/utils';
 
 import { msgClient } from '@/shared/utils/msg';
 
@@ -18,8 +17,10 @@ export class AuthService {
     constructor(private readonly userService: UserService) {}
 
     // 发送短信验证码
-    async sendCodeMsg(tel: string): Promise<Result> {
-        const user = await this.userService.findByTel(tel);
+    async sendCodeMsg(phone: string): Promise<Result> {
+        const code = '1234'; // getRandomCode();
+
+        const user = await this.userService.findByTel(phone);
         if (user) {
             const diffTime = dayjs().diff(dayjs(user.codeCreateTimeAt));
             if (diffTime < 60 * 1000) {
@@ -28,12 +29,43 @@ export class AuthService {
                     message: 'code 尚未过期',
                 };
             }
+
+            const result = await this.userService.updateCode(user.id, code);
+            if (result) {
+                return {
+                    code: SUCCESS,
+                    message: '获取验证码成功',
+                    data: code,
+                };
+            }
+            return {
+                code: UPDATE_ERROR,
+                message: '更新 code 失败',
+            };
         }
-        const code = getRandomCode();
+
+        const result = await this.userService.create({
+            phone,
+            code,
+            codeCreateTimeAt: new Date(),
+        });
+
+        if (result) {
+            return {
+                code: SUCCESS,
+                message: '获取验证码成功',
+                data: code,
+            };
+        }
+        return {
+            code: UPDATE_ERROR,
+            message: '新建账号失败',
+        };
+
         const sendSmsRequest = new Dysmsapi.SendSmsRequest({
             signName: SIGN_NAME,
             templateCode: TEMPLATE_CODE,
-            phoneNumbers: tel,
+            phoneNumbers: phone,
             templateParam: `{\\"code\\":\\"${code}\\"}`,
         });
         const runtime = new utils.RuntimeOptions({});
@@ -58,8 +90,9 @@ export class AuthService {
                     message: '更新 code 失败',
                 };
             }
+            // eslint-disable-next-line @typescript-eslint/no-shadow
             const result = await this.userService.create({
-                phone: tel,
+                phone,
                 code,
                 codeCreateTimeAt: new Date(),
             });

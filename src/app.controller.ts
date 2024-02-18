@@ -18,7 +18,7 @@ export class AppController {
 
     @Get('/del')
     async del(): Promise<boolean> {
-        return this.userService.del('0d56828d-5b72-47c3-955a-f76caf4793f2');
+        return this.userService.del(['0d56828d-5b72-47c3-955a-f76caf4793f2']);
     }
 
     @Get('/update')

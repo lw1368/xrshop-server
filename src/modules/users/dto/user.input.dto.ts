@@ -5,12 +5,9 @@ export class UserInput {
     @Field({ description: '昵称' })
     name?: string;
 
-    @Field({ description: '简介' })
-    desc: string;
-
-    @Field({ description: '头像' })
-    avatar?: string;
+    @Field({ description: '邮箱' })
+    email?: string;
 
     @Field({ description: '电话' })
-    phone: string;
+    phone?: string;
 }
